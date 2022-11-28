@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using InMemoryApp.Web.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace InMemoryApp.Web.Controllers
@@ -20,7 +21,13 @@ namespace InMemoryApp.Web.Controllers
                 options.SlidingExpiration=TimeSpan.FromSeconds(10);
             options.Priority = CacheItemPriority.NeverRemove;
                 memoryCache.Set<string>("zaman", DateTime.Now.ToString(),options);
-          
+            Product products = new Product()
+            {
+                Id = 1,
+                Name = "Kalem",
+                Price = 50
+            };
+          memoryCache.Set<Product>("product:1", products);
           
            
             return View();
@@ -29,6 +36,7 @@ namespace InMemoryApp.Web.Controllers
         {
             memoryCache.TryGetValue("zaman", out string zamancache);
             ViewBag.zaman = zamancache;
+            ViewBag.products = memoryCache.Get<Product>("product:1");
             return View();
         }
     
